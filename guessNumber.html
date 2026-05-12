@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>猜數字遊戲</title>
+    <style>
+      .modal {
+        display: none;
+      }
+
+      .modal.show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="play">我要玩猜數字遊戲</button>
+    <div id="modal" class="modal">
+      <p id="hint">請猜1(包含)~100(包含)</p>
+      <input type="text" id="inputNumber" />
+      <button id="guess">猜測</button>
+      <button id="exit">離開</button>
+    </div>
+    <script>
+      const play = document.querySelector("#play");
+      const inputNumber = document.querySelector("#inputNumber");
+      const modal = document.querySelector("#modal");
+      const guess = document.querySelector("#guess");
+      const exit = document.querySelector("#exit");
+      const hint = document.querySelector("#hint");
+      let luckyNumber = Math.floor(Math.random() * 100) + 1;
+      let firstNum = 1;
+      let lastNum = 100;
+      let containsFirst = true;
+      let containsLast = true;
+
+      play.addEventListener("click", function () {
+        modal.classList.add("show");
+        play.disabled = true;
+      });
+
+      guess.addEventListener("click", function () {
+        const number = Number(inputNumber.value.trim());
+        inputNumber.value = "";
+
+        if (Number.isNaN(number)) {
+          alert("請輸入數字");
+          return;
+        } else if (!Number.isInteger(number)) {
+          alert("請輸入整數");
+          return;
+        } else if (isOutOfRange(number)) {
+          alert("請輸入範圍內數字");
+          return;
+        }
+
+        if (luckyNumber > number) {
+          containsFirst = false;
+          firstNum = number;
+        } else if (luckyNumber < number) {
+          containsLast = false;
+          lastNum = number;
+        } else {
+          alert("猜對了");
+          reset();
+          return;
+        }
+
+        updateHint();
+      });
+
+      exit.addEventListener("click", function () {
+        reset();
+      });
+
+      function reset() {
+        inputNumber.value = "";
+        modal.classList.remove("show");
+        play.disabled = false;
+        initGame();
+      }
+
+      function isOutOfRange(number) {
+        return (
+          number < firstNum ||
+          number > lastNum ||
+          (number === firstNum && !containsFirst) ||
+          (number === lastNum && !containsLast)
+        );
+      }
+
+      function updateHint() {
+        const first = containsFirst ? "(包含)" : "(不包含)";
+        const last = containsLast ? "(包含)" : "(不包含)";
+
+        hint.textContent = `請猜 ${firstNum}${first} ~ ${lastNum}${last}`;
+      }
+
+      function initGame() {
+        luckyNumber = Math.floor(Math.random() * 100) + 1;
+        firstNum = 1;
+        lastNum = 100;
+        containsFirst = true;
+        containsLast = true;
+
+        updateHint();
+      }
+    </script>
+  </body>
+</html>
