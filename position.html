@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>定位練習</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .card {
+        border: 1px solid gray;
+        width: 500px;
+        max-width: 90%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .card-img {
+        position: relative;
+      }
+
+      .card-img img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .card-img::after {
+        content: "hot";
+        position: absolute;
+        top: 12px;
+        right: 12px;
+
+        display: flex;
+        width: 100px;
+        height: 100px;
+        background-color: red;
+        color: white;
+        justify-content: center;
+        align-items: center;
+        border-radius: 12px;
+      }
+
+      .card-title,
+      .card-content {
+        padding: 12px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-img">
+        <img src="https://picsum.photos/500/300/?random=10" />
+      </div>
+      <div class="card-title">卡片標題</div>
+      <div class="card-content">
+        這是卡片的內容這是卡片的內容這是卡片的內容這是卡片的內容這是卡片的內容這是卡片的內容
+      </div>
+    </div>
+  </body>
+</html>
