@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 將：鼠、雞、猴、龍、馬 依據十二生肖順序進行遞增排序： -->
+    <script>
+      const zoo = ["鼠", "雞", "猴", "龍", "馬"];
+      const order = [
+        "鼠",
+        "牛",
+        "虎",
+        "兔",
+        "龍",
+        "蛇",
+        "馬",
+        "羊",
+        "猴",
+        "雞",
+        "狗",
+        "豬",
+      ];
+
+      zoo.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+      console.log('["鼠", "雞", "猴", "龍", "馬"]排序後如下');
+      console.log(zoo);
+    </script>
+  </body>
+</html>
