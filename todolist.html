@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- 引入 Bootstrap CSS 樣式 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f5f7fb;
+        font-family: Arial, sans-serif;
+      }
+
+      .add {
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        margin: 20px auto;
+      }
+
+      .todo-wrapper {
+        max-width: 600px;
+        margin: 60px auto;
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      }
+
+      .todo-title {
+        text-align: center;
+        margin-bottom: 24px;
+        font-weight: bold;
+      }
+
+      .add-area {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      #newTodo {
+        flex: 1;
+      }
+
+      .todo-item {
+        margin-bottom: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background-color: #f8f9fa;
+        transition: all 0.2s ease;
+      }
+
+      .todo-item:hover {
+        background-color: #eef2f7;
+      }
+
+      .todo-item input[type="text"] {
+        background-color: white;
+      }
+
+      .delete-btn {
+        margin-left: 12px;
+        border: none;
+        background-color: #dc3545;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 8px;
+        transition: 0.2s;
+      }
+
+      .delete-btn:hover {
+        background-color: #bb2d3b;
+      }
+
+      .form-check-input {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Bootstrap container：讓內容有左右留白 -->
+    <div class="container">
+      <!-- 待辦清單標題 -->
+      <h1 class="todo-title"></h1>
+      <div class="add">
+        <input type="text" id="newTodo" />
+        <button id="addTodo" class="btn btn-primary">加入新待辦事項</button>
+      </div>
+      <!-- JavaScript 產生的待辦事項會放在這裡 -->
+      <div class="todo-container"></div>
+    </div>
+
+    <!-- 引入 Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const myTodo = {
+        title: "我的待辦清單",
+        items: [],
+      };
+
+      // 取得標題元素
+      const title = document.querySelector(".todo-title");
+
+      // 取得待辦事項容器
+      const todoContainer = document.querySelector(".todo-container");
+
+      // 取得輸入待辦事項文字框
+      const newTodo = document.querySelector("#newTodo");
+
+      // 取得加入新待辦事項按鈕
+      const addTodo = document.querySelector("#addTodo");
+
+      // 將 JSON 裡的 title 顯示到畫面上
+      title.textContent = myTodo.title;
+
+      /**
+       * 建立單一待辦事項 DOM 元素
+       * @param {Object} item 單一待辦事項資料
+       * @returns {HTMLElement}
+       */
+      function createTodoItem(item) {
+        // 建立最外層 div
+        const todoItem = document.createElement("div");
+
+        // 加入 Bootstrap 與自訂 class
+        todoItem.classList.add(
+          "input-group",
+          "align-items-center",
+          "todo-item",
+        );
+
+        // 建立 checkbox 外層 div
+        const todoCheck = document.createElement("div");
+
+        // 加入 checkbox 樣式 class
+        todoCheck.classList.add("form-check", "me-2");
+
+        // 建立 checkbox input
+        const checkInput = document.createElement("input");
+
+        // 加入 Bootstrap checkbox 樣式
+        checkInput.classList.add("form-check-input");
+
+        // 設定 input 類型為 checkbox
+        checkInput.setAttribute("type", "checkbox");
+
+        // 根據 isDone 設定是否勾選
+        checkInput.checked = item.isDone;
+
+        // 將 checkbox 放入外層 div
+        todoCheck.append(checkInput);
+
+        // 建立文字輸入框
+        const contentInput = document.createElement("input");
+
+        // 加入 Bootstrap input 樣式
+        contentInput.classList.add("form-control");
+
+        // 設定 input 類型為文字
+        contentInput.setAttribute("type", "text");
+
+        // 設定 input 不可修改
+        contentInput.disabled = true;
+
+        // 設定輸入框內容
+        contentInput.value = item.content;
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "刪除";
+        deleteButton.classList.add("delete-btn");
+        deleteButton.addEventListener("click", function () {
+          myTodo.items = myTodo.items.filter(
+            (existItem) => existItem.id !== item.id,
+          );
+          todoItem.remove();
+        });
+
+        // 將 checkbox 與 input 放入 todoItem
+        todoItem.append(todoCheck, contentInput, deleteButton);
+
+        // 回傳建立好的待辦事項 DOM
+        return todoItem;
+      }
+
+      addTodo.addEventListener("click", function () {
+        const newTodoValue = newTodo.value.trim();
+        let maxId = 0;
+        let duplicate = false;
+
+        for (let item of myTodo.items) {
+          if (item.id > maxId) {
+            maxId = item.id;
+          }
+
+          if (newTodoValue === item.content) {
+            duplicate = true;
+          }
+        }
+
+        if (duplicate && !confirm("與現有待辦清單有重複，是否繼續")) {
+          return;
+        }
+
+        const newTodoItem = {
+          id: maxId + 1,
+          content: newTodoValue,
+          isDone: false,
+        };
+
+        myTodo.items.push(newTodoItem);
+        todoContainer.append(createTodoItem(newTodoItem));
+      });
+    </script>
+  </body>
+</html>
